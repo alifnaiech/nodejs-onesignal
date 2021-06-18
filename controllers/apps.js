@@ -38,3 +38,23 @@ exports.getDevices = async (req, res, next)=>{
 
 
 // /POST NOTIFICATION
+exports.sendNotification = async(req, res, next)=>{
+    const body = {
+        app_id: `${keys.APP_ID}`,
+        contents: {"en":"Test API Send Notifica"},
+        included_segments: ["Active Users","Subscribed Users"]
+    }
+    const options = {
+        'method': 'POST',
+        'headers': {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${keys.REST_API_KEY}`
+        },
+        'body': JSON.stringify(body)
+    }
+    const response = await fetch(url + "/notifications", options)
+                           .then(res=> res.json())
+                           .catch(err=> console.log(err));
+    console.log(response);
+    res.json(response);
+}
