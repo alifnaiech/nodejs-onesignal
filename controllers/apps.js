@@ -1,24 +1,40 @@
 const fetch = require('node-fetch');
 
-const keys = require('../config/keys')
+const axios = require('axios');
+
+const keys = require('../config/keys');
 
 const url = 'https://onesignal.com/api/v1';
 
 
 // /GET VIEW APPS 
-exports.getApps = async (req, res, next)=>{
-    const options = {
-        'method' : 'GET',
-        'headers' : {
-            'Content-Type' : 'application/json',
-            'Authorization' : `Basic ${keys.USER_AUTH_KEY}`
+// exports.getApps = async (req, res, next)=>{
+//     const options = {
+//         'method' : 'GET',
+//         'headers' : {
+//             'Content-Type' : 'application/json',
+//             'Authorization' : `Basic ${keys.USER_AUTH_KEY}`
+//         }
+//     };
+//     const response = await fetch(url + '/apps', options)
+//                             .then(res => res.json())
+//                             .catch(err=> console.log(err));
+//     res.json(response);
+// }
+
+exports.getApps = async(req, res, next)=>{
+    const config = {
+        'headers': {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${keys.USER_AUTH_KEY}`
         }
     };
-    const response = await fetch(url + '/apps', options)
-                            .then(res => res.json())
-                            .catch(err=> console.log(err));
+    const response = await axios.get(url + '/apps', config).then(res=> res.data);
+    console.log(response);
     res.json(response);
 }
+
+
 
 
 // /GET VIEW DEVICES
