@@ -4,24 +4,10 @@ const axios = require('axios');
 
 const keys = require('../config/keys');
 
-const url = 'https://onesignal.com/api/v1';
+const url = '   ';
 
 
 // /GET VIEW APPS 
-// exports.getApps = async (req, res, next)=>{
-//     const options = {
-//         'method' : 'GET',
-//         'headers' : {
-//             'Content-Type' : 'application/json',
-//             'Authorization' : `Basic ${keys.USER_AUTH_KEY}`
-//         }
-//     };
-//     const response = await fetch(url + '/apps', options)
-//                             .then(res => res.json())
-//                             .catch(err=> console.log(err));
-//     res.json(response);
-// }
-
 exports.getApps = async(req, res, next)=>{
     const config = {
         'headers': {
@@ -30,24 +16,19 @@ exports.getApps = async(req, res, next)=>{
         }
     };
     const response = await axios.get(url + '/apps', config).then(res=> res.data);
-    console.log(response);
     res.json(response);
 }
 
-
-
-
-// /GET VIEW DEVICES
+// /GET VIEW DEVICES 
 exports.getDevices = async (req, res, next)=>{
-    const options = {
-        'method': 'GET',
+    const config = {
         'headers': {
             'Content-Type': 'application/json',
             'Authorization': `Basic ${keys.REST_API_KEY}`
         }
     }
-    const response = await fetch(url + `/players?app_id=${keys.APP_ID}`, options)
-                          .then(res=> res.json())
+    const response = await axios.get(url + `/players?app_id=${keys.APP_ID}`, config)
+                          .then(res=> res.data)
                           .catch(err=> console.log(err));
     res.json(response);
 } 
@@ -58,19 +39,17 @@ exports.sendNotification = async(req, res, next)=>{
     const body = {
         app_id: `${keys.APP_ID}`,
         contents: {"en":"Test API Send Notifica"},
-        included_segments: ["Active Users","Subscribed Users"]
+        included_segments: ["Active Users","Subscribed Users"] 
     }
-    const options = {
-        'method': 'POST',
+
+    const config = {
         'headers': {
             'Content-Type': 'application/json',
             'Authorization': `Basic ${keys.REST_API_KEY}`
         },
         'body': JSON.stringify(body)
     }
-    const response = await fetch(url + "/notifications", options)
-                           .then(res=> res.json())
-                           .catch(err=> console.log(err));
-    console.log(response);
+
+    const response = await axios.post(url + "/notifications", config).then(res=> res.data).catch(err=> console.log(err));
     res.json(response);
 }
