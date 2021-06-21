@@ -4,7 +4,7 @@ const axios = require('axios');
 
 const keys = require('../config/keys');
 
-const url = '   ';
+const url = 'https://onesignal.com/api/v1';
 
 
 // /GET VIEW APPS 
