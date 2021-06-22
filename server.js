@@ -2,11 +2,15 @@ const express = require('express');
 
 const app = express();
 
-const appsRoutes = require('./routes/apps');
+const appsRoutes = require('./routes');
 
-const db = require('./utils/database');
 
-db.execute('SELECT * FROM users').then(res=> console.log(res[0])).catch(err=> console.log(err));
+// const query = "SELECT * FROM `node-onesignal`.users;";
+//     pool.execute(query, (results, fields, err)=>{
+//         // console.log(results);
+//         console.log(JSON.stringify(fields[0]));
+//     })
+
 
 app.use((req, res, next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -15,11 +19,14 @@ app.use((req, res, next)=>{
     next();
 });
 
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
+
 
 app.use(appsRoutes);
 
 app.use('/', (req, res, next)=>{
-    res.send('<h1>One Signal</h1>');
+    res.send('<h1>Home PAGE</h1>');
 });
 
 app.listen(3000, ()=>{
