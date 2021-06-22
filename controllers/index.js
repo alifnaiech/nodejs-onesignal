@@ -29,17 +29,24 @@ exports.getApps = async(req, res, next)=>{
 
 // /GET VIEW DEVICES ONESIGNAL
 exports.getDevices = async (req, res, next)=>{
-    const options = {
-        'method': 'GET',
+    const config = {
         'headers': {
             'Content-Type': 'application/json',
             'Authorization': `Basic ${keys.REST_API_KEY}`
         }
     }
-    const response = await fetch(url + `/players?app_id=${keys.APP_ID}`, options)
-                          .then(res=> res.json())
+    const response = await axios.get(url + `/players?app_id=${keys.APP_ID}`, config)
+                          .then(res=> res.data)
                           .catch(err=> console.log(err));
-    res.json(response);
+    let players = response['players'];
+    for (let player of players){
+        let data = {
+            user: player['id']
+        }
+        const query = "INSERT INTO `node-onesignal`.users (user) VALUES(?)"
+        pool.execute(query, Object.values(data))
+    }
+    res.json({status: 'success'});
 } 
 
 
