@@ -9,7 +9,7 @@ const mysql = require('mysql2');
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'sirine',
+    password: 'burro100',
     database: 'node-onesignal'
 });
 
@@ -66,6 +66,28 @@ exports.sendNotification = async(req, res, next)=>{
     res.json(response);
 }
 
+
+// /POST NOTIFICATION BASED ON TAGS
+exports.sendNotificationTags = async(req, res, next)=>{
+    const body = {
+        app_id: `${keys.APP_ID}`,
+        contents: {"en":"Test API Send Notifica"},
+        filters: [
+            {"field": "tag", "key": "userId", "relation": "=", "value": "alifnaiech@gmail.com"}
+        ]
+    }
+
+    const data = JSON.stringify(body);
+    const config = {
+        'headers': {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${keys.REST_API_KEY}`
+        }
+    }
+    const response = await axios.post(url + '/notifications', data, config).then(res=> res.data).catch(err=> console.log(err));
+    console.log(response);
+    res.json(response);
+}
 
 // /GET USERS FROM DATABASE
 exports.getUsers = (req, res, next)=>{
