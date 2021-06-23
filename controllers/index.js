@@ -9,7 +9,7 @@ const mysql = require('mysql2');
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'burro100',
+    password: 'sirine',
     database: 'node-onesignal'
 });
 
@@ -27,55 +27,64 @@ exports.getApps = async(req, res, next)=>{
 }
 
 
-// /GET VIEW DEVICES ONESIGNAL
-exports.getDevices = async (req, res, next)=>{
-    const config = {
-        'headers': {
-            'Content-Type': 'application/json',
-            'Authorization': `Basic ${keys.REST_API_KEY}`
-        }
+exports.getDevices = async(req, res, next)=>{
+    let auth = req.body.userApiKey
+    let REST_API_KEY = '';
+    let APP_ID = '';
+    const data = {
+        "userApiKey" : auth
     }
-    const response = await axios.get(url + `/players?app_id=${keys.APP_ID}`, config)
+    const query = "SELECT * FROM `node-onesignal`.users WHERE userApiKey=?;";
+    pool.execute(query, Object.values(data), (err, result, fields)=>{
+        if(result == null || result == ''){
+            res.status(400).json({status: "faillure"});
+        }else{
+            REST_API_KEY = result[0].osRestApiKey;
+            APP_ID = result[0].osAppId;
+        }
+    });
+    const config = {
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${keys.REST_API_KEY}`
+                }
+            }
+            const response = await axios.get(url + `/players?app_id=${keys.APP_ID}`, config)
                           .then(res=> res.data)
                           .catch(err=> console.log(err));
-    let players = response['players'];
-    for (let player of players){
-        let data = {
-            user: player['id']
-        }
-        const query = "INSERT INTO `node-onesignal`.users (user) VALUES(?)"
-        pool.execute(query, Object.values(data))
-    }
-    res.json({status: 'success'});
-} 
-
-
-// /POST NOTIFICATION FOR ALL SUBSCRIBER ONESIGNAL
-exports.sendNotification = async(req, res, next)=>{
-    const body = {
-        app_id: `${keys.APP_ID}`,
-        contents: {"en":"Test API Send Notifica"},
-        included_segments: ["Active Users","Subscribed Users"]
-    }
-
-    const data = JSON.stringify(body);
-    const config = {
-        'headers': {
-            'Content-Type': 'application/json',
-            'Authorization': `Basic ${keys.REST_API_KEY}`
-        },
-        'body': JSON.stringify(body)
-    }
-    const response = await axios.post(url + "/notifications", data, config)
-                           .then(res=> res.data)
-                           .catch(err=> console.log(err));
-    console.log(response);
-    res.json(response);
+            res.json(response);
 }
 
 
+
+
+// /POST NOTIFICATION FOR ALL SUBSCRIBER ONESIGNAL
+// exports.sendNotification = async(req, res, next)=>{
+//     const body = {
+//         app_id: `${keys.APP_ID}`,
+//         contents: {"en":"Test API Send Notifica"},
+//         included_segments: ["Active Users","Subscribed Users"]
+//     }
+
+//     const data = JSON.stringify(body);
+//     const config = {
+//         'headers': {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Basic ${keys.REST_API_KEY}`
+//         },
+//         'body': JSON.stringify(body)
+//     }
+//     const response = await axios.post(url + "/notifications", data, config)
+//                            .then(res=> res.data)
+//                            .catch(err=> console.log(err));
+//     console.log(response);
+//     res.json(response);
+// }
+
+
 // /POST NOTIFICATION BASED ON TAGS
-exports.sendNotificationTags = async(req, res, next)=>{
+exports.sendNotification = async(req, res, next)=>{
+
     const body = {
         app_id: `${keys.APP_ID}`,
         contents: {"en":"Test API Send Notifica"},

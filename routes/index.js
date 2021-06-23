@@ -8,6 +8,6 @@ router.get('/apps', index.getApps);
 router.get('/devices', index.getDevices);
 router.get('/getUsers', index.getUsers);
 router.post('/sendnotifica', index.sendNotification);
-router.post('/sendNotificationTags', index.sendNotificationTags);
+// router.post('/sendNotificationTags', index.sendNotificationTags);
 router.post('/addUser', index.addUser);
 module.exports = router;
