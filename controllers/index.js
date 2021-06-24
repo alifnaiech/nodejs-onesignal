@@ -49,7 +49,7 @@ exports.getDevices = async(req, res, next)=>{
             }
             const response = await axios.get(url + `/players?app_id=${APP_ID}`, config)
                           .then(res=> res.data)
-                          .catch(err=> console.log(err));
+                          .catch(err=> res.status(400).json(err));
             res.json(response);
         }
 
@@ -86,7 +86,7 @@ exports.sendNotification = async(req, res, next)=>{
                             'Authorization': `Basic ${REST_API_KEY}`
                         }
                     }
-            const response = await axios.post(url + '/notifications', data, config).then(res=> res.data).catch(err=> console.log(err));
+            const response = await axios.post(url + '/notifications', data, config).then(res=> res.data).catch(err=> res.status(400).json(err));
             console.log(response);
             res.json(response);
         }
