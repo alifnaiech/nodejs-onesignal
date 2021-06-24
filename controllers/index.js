@@ -35,24 +35,26 @@ exports.getDevices = async(req, res, next)=>{
         "userApiKey" : auth
     }
     const query = "SELECT * FROM `node-onesignal`.users WHERE userApiKey=?;";
-    pool.execute(query, Object.values(data), (err, result, fields)=>{
+    pool.execute(query, Object.values(data), async (err, result, fields)=>{
         if(result == null || result == ''){
             res.status(400).json({status: "faillure"});
         }else{
             REST_API_KEY = result[0].osRestApiKey;
             APP_ID = result[0].osAppId;
-        }
-    });
-    const config = {
+            const config = {
                 'headers': {
                     'Content-Type': 'application/json',
-                    'Authorization': `Basic ${keys.REST_API_KEY}`
+                    'Authorization': `Basic ${REST_API_KEY}`
                 }
             }
-            const response = await axios.get(url + `/players?app_id=${keys.APP_ID}`, config)
+            const response = await axios.get(url + `/players?app_id=${APP_ID}`, config)
                           .then(res=> res.data)
                           .catch(err=> console.log(err));
             res.json(response);
+        }
+
+    });
+
 }
 
 

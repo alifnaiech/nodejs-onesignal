@@ -23,7 +23,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 
-app.use(appsRoutes);
+app.use('/api',appsRoutes);
 
 app.use('/', (req, res, next)=>{
     res.send('<h1>Home PAGE</h1>');
