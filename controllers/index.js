@@ -60,6 +60,7 @@ exports.getDevices = async(req, res, next)=>{
 // /POST SEND NOTIFICATION BASED ON TAGS
 exports.sendNotification = async(req, res, next)=>{
     let auth = req.body.userApiKey;
+    let headings = req.body.headings;
     let contents = req.body.contents;
     let filters = req.body.filters;
     let REST_API_KEY = '';
@@ -77,6 +78,7 @@ exports.sendNotification = async(req, res, next)=>{
             const body = {
                 app_id: `${APP_ID}`,
                 contents: contents,
+                headings: headings,
                 filters: filters
             }
             const data = JSON.stringify(body);
