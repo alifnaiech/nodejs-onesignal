@@ -2,15 +2,9 @@ const express = require('express');
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
 const appsRoutes = require('./routes');
-
-
-// const query = "SELECT * FROM `node-onesignal`.users;";
-//     pool.execute(query, (results, fields, err)=>{
-//         // console.log(results);
-//         console.log(JSON.stringify(fields[0]));
-//     })
-
 
 app.use((req, res, next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -29,7 +23,7 @@ app.use('/', (req, res, next)=>{
     res.send('<h1>Home PAGE</h1>');
 });
 
-app.listen(3000, ()=>{
-    console.log("Port listening: 3000")
+app.listen(PORT, ()=>{
+    console.log(`Port listening: ${PORT}`);
 });
 
